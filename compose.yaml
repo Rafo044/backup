@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: postgres_db
+    networks:
+      - postgres
+    ports:
+      - "$POSTGRES_PORT:5432"
+    volumes:
+      - ./data:/var/lib/postgresql
+    env_file:
+      - .env
+
+networks:
+  postgres:
+    driver: bridge

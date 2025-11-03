@@ -1,0 +1,39 @@
+- name: connect to postgresql
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Copy queries.sql to /tmp/queries.sql
+      ansible.builtin.copy:
+        src: src/queries.sql
+        dest: /tmp/queries.sql
+
+    - name: Run several queries against postgres db
+      community.postgresql.postgresql_query:
+        login_host: "{{ pg_host }}"
+        login_port: "{{ pg_port }}"
+        login_user: "{{ pg_user }}"
+        login_password: "{{ pg_password }}"
+        db: "{{ pg_db }}"
+        query: |
+          CREATE TABLE IF NOT EXISTS employees (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) UNIQUE
+          );
+      delegate_to: localhost
+
+    - name: Execute a command
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "apt update && apt upgrade -y && apt install pgbackrest -y"
+
+    - name: Update the pgbackrest configuration
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c 'echo -e "[demo] \n pg-path=/var/lib/postgresql/18/docker" >> /etc/pgbackrest.conf'
+
+    - name: Execute sql script
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "psql -U postgres -d {{ pg_db }} -f /tmp/queries.sql"
