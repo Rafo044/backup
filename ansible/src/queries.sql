@@ -1,6 +1,4 @@
 
-CREATE DATABASE IF NOT EXISTS demo;
-
 ALTER SYSTEM SET archive_mode = on;
 ALTER SYSTEM SET archive_log_format = '%t_%s_%r.arc';
 ALTER SYSTEM SET max_wal_senders = 10;

@@ -10,6 +10,8 @@
       ansible.builtin.copy:
         src: src/queries.sql
         dest: /tmp/queries.sql
+      tags:
+        - copy
 
     - name: Run several queries against postgres db
       community.postgresql.postgresql_query:
@@ -29,11 +31,29 @@
     - name: Execute a command
       ansible.builtin.command:
         cmd: docker exec  postgres_db bash -c "apt update && apt upgrade -y && apt install pgbackrest -y"
+      tags:
+        - install_pgbackrest
+
+    - name: install wget
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "apt update && apt install wget -y"
+      tags:
+        - install_wget
 
     - name: Update the pgbackrest configuration
       ansible.builtin.command:
         cmd: docker exec  postgres_db bash -c 'echo -e "[demo] \n pg-path=/var/lib/postgresql/18/docker" >> /etc/pgbackrest.conf'
+      tags:
+        - update_pgbackrest_config
 
     - name: Execute sql script
       ansible.builtin.command:
         cmd: docker exec  postgres_db bash -c "psql -U postgres -d {{ pg_db }} -f /tmp/queries.sql"
+      tags:
+        - execute_sql_script_queries
+
+    - name: Execute sql script
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "psql -U postgres -d {{ pg_db }} -f /tmp/flight.sql"
+      tags:
+        - execute_sql_script_flight
