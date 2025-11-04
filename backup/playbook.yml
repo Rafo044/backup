@@ -1,6 +1,4 @@
 - name: connect to postgresql
-  hosts: localhost
-  connection: local
   gather_facts: false
   vars_files:
     - vars.yml
@@ -40,6 +38,12 @@
       tags:
         - install_wget
 
+    - name: Install Flight dataset
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "cd tmp && wget {{ link }}"
+      tags:
+        - install_flight_dataset
+
     - name: Update the pgbackrest configuration
       ansible.builtin.command:
         cmd: docker exec  postgres_db bash -c 'echo -e "[demo] \n pg-path=/var/lib/postgresql/18/docker" >> /etc/pgbackrest.conf'
@@ -57,3 +61,21 @@
         cmd: docker exec  postgres_db bash -c "psql -U postgres -d {{ pg_db }} -f /tmp/flight.sql"
       tags:
         - execute_sql_script_flight
+
+    - name: Create Full backup
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "pgbackrest --stanza=demo --type=full backup"
+      tags:
+        - create_full_backup
+
+    - name: Create Incremental backup
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "pgbackrest --stanza=demo --type=incr backup"
+      tags:
+        - create_incremental_backup
+
+    - name: Create Differential backup
+      ansible.builtin.command:
+        cmd: docker exec  postgres_db bash -c "pgbackrest --stanza=demo --type=differential backup"
+      tags:
+        - create_differential_backup

@@ -5,3 +5,9 @@ up:
 
 down:
 	docker compose down
+
+incr:
+
+full:
+
+diff:

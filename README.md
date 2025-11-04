@@ -23,3 +23,16 @@ WAL faylları replay edilir
 Database əvvəlki son vəziyyətinə gətirilir
 RTO burada base backup bərpa vaxtı + WAL replay vaxtıdır.
 PgBackRest və Barman kimi backup həllərində RTO və RPO (Recovery Point Objective – itirilə biləcək data miqdarı) öncədən planlanır.
+
+
+|Tapşırıqın adı |Ansible Tag|Gördüyü iş|Komanda|
+| --- | --- | --- | --- |
+| Full Backup | create_full_backup | Full bərpanın alınması |  |
+| Incremental Backup | create_incremental_backup | Incremental bərpanın alınması |  |
+| Differential Backup | create_differential_backup | Differential bərpanın alınması |  |
+| Point-in-Time Recovery | create_point_in_time_recovery | Hər hansı zamana görə bərpa prosesi |  |
+| Install pgbackrest | install_pgbackrest | pgbackrest-in yüklənməsi |  |
+| Install wget | install_wget | wget-in yüklənməsi |  |
+| Queries skripti | execute_sql_script_queries | Queries skriptinin postgresə yüklənməsi |  |
+| Flight skripti | execute_sql_script_flight | Flight skriptinin postgresə yüklənməsi |  |
+| Install Flight dataset | install_flight_dataset | Flight datasetinin mənbədən yüklənməsi |  |
