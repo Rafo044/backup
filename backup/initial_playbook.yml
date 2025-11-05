@@ -32,7 +32,8 @@
 
     - name: Install Flight dataset
       ansible.builtin.shell: |
-        cd tmp && wget {{ link }}
+        cd tmp
+        wget {{ link }}
       tags:
         - install_flight_dataset
 
