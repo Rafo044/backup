@@ -1,0 +1,55 @@
+- name: connect to postgresql
+  hosts: postgres_db
+  gather_facts: false
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Ping container
+      ping:
+
+    - name: Copy queries.sql to /tmp/queries.sql
+      ansible.builtin.copy:
+        src: src/queries.sql
+        dest: /tmp/queries.sql
+      tags:
+        - copy
+
+    - name: Execute a command
+      ansible.builtin.shell: |
+        apt update
+        apt upgrade -y
+        apt install pgbackrest -y
+      tags:
+        - install_pgbackrest
+
+    - name: install wget
+      ansible.builtin.shell: |
+        apt update
+        apt install wget -y
+      tags:
+        - install_wget
+
+    - name: Install Flight dataset
+      ansible.builtin.shell: |
+        cd tmp && wget {{ link }}
+      tags:
+        - install_flight_dataset
+
+    - name: Update the pgbackrest configuration
+      ansible.builtin.shell: |
+        echo -e "[demo] \n pg-path=/var/lib/postgresql/18/docker" >> /etc/pgbackrest.conf
+      tags:
+        - update_pgbackrest_config
+
+    - name: Execute sql script
+      ansible.builtin.shell: |
+        psql -U postgres -d {{ pg_db }} -f /tmp/queries.sql
+      tags:
+        - execute_sql_script_queries
+
+    - name: Execute sql script
+      ansible.builtin.shell: |
+        psql -U postgres -d {{ pg_db }} -f /tmp/flight.sql
+      tags:
+        - execute_sql_script_flight
