@@ -1,4 +1,4 @@
-- name: connect to postgresql
+- name: Create Incremental backup
   hosts: postgres_db
   gather_facts: false
   vars_files:

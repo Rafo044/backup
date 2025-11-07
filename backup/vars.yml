@@ -5,3 +5,4 @@ pg_port: 5433
 pg_db: postgres
 pg_schema: public
 link: https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/example-guided-project/flights_RUSSIA_small.sql
+restore_time: 2025-11-05 13:45:00
