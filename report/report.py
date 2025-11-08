@@ -1,12 +1,15 @@
+import os
+from datetime import datetime
+
+from dotenv import load_dotenv
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from datetime import datetime
-import jinja2
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
+load_dotenv()
 
 pdfmetrics.registerFont(
     TTFont("DejaVuSans", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
@@ -43,10 +46,10 @@ body_style = ParagraphStyle(
 )
 
 report_date = datetime.now().strftime("%Y-%m-%d %H:%M")
-rto = {{rto}}
-rpo = {{rpo}}
-incident = {{incident}}
-impact = "Biznes əməliyyatlarının 25%-nə təsir etdi"
+rto = os.getenv("RTO")
+rpo = os.getenv("RPO")
+incident = os.getenv("INCIDENT")
+impact = os.getenv("IMPACT")
 recovery_steps = [
     "Zəmanətli ehtiyat nüsxə bərpası başladı",
     "Database cluster yenidən işə salındı",
@@ -99,4 +102,4 @@ elements.append(
 
 # === PDF faylı yaradılır ===
 doc.build(elements)
-print(" 'seliqeli_report.pdf' faylı uğurla yaradıldı.")
+print(" 'DRecovery.pdf' faylı uğurla yaradıldı.")
