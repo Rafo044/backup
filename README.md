@@ -1,3 +1,9 @@
+
+# Data Pipeline
+
+[Data Pipeline](./docs/images/pipeline.png)
+
+
 # Backup prosesi əsasən 3 növü var :
 1. Full Backup
 2. Incremental Backup
