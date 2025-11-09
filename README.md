@@ -1,7 +1,7 @@
 
 # Data Pipeline
 
-[Data Pipeline](./docs/images/pipeline.png)
+![Data Pipeline](./docs/images/pipeline.png)
 
 
 # Backup prosesi əsasən 3 növü var :
