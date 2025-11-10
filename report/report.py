@@ -1,3 +1,5 @@
+"""This module contains functions for generating disaster recovery reports."""
+
 import os
 from datetime import datetime
 
