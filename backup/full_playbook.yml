@@ -7,6 +7,6 @@
   tasks:
     - name: Create Full backup
       ansible.builtin.shell: |
-        pgbackrest --stanza=demo --type=full backup
+        pgbackrest --stanza=netflix_shows --type=full backup
       tags:
         - create_full_backup

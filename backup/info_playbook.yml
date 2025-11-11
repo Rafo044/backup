@@ -1,0 +1,22 @@
+- name: Create Incremental backup
+  hosts: postgres_db
+  gather_facts: false
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Permission check
+      ansible.builtin.shell: |
+        chown -R postgres:postgres /var/lib/pgbackrest
+        chmod -R 750 /var/lib/pgbackrest
+
+    - name: Get pgBackRest info as JSON
+      ansible.builtin.shell: su - postgres -c "pgbackrest info --output=json"
+      register: pgbackrest_info
+      changed_when: false
+
+    - name: Save pgBackRest info JSON locally
+      delegate_to: localhost
+      ansible.builtin.copy:
+        dest: "./pgbackrest_info.json"
+        content: "{{ pgbackrest_info.stdout }}"

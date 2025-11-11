@@ -30,18 +30,47 @@
       tags:
         - install_wget
 
-    - name: Install Flight dataset
+    - name: Install Netflix dataset
       ansible.builtin.shell: |
-        cd tmp
-        wget {{ link }}
+        cd /tmp && wget {{ link }}
       tags:
-        - install_flight_dataset
+        - install_netflix_dataset
 
-    - name: Update the pgbackrest configuration
-      ansible.builtin.shell: |
-        echo -e "[demo] \n pg-path=/var/lib/postgresql/18/docker" >> /etc/pgbackrest.conf
+    #    - name: Update the pgbackrest configuration
+    #     ansible.builtin.shell: |
+    #      echo "[netflix_shows]" >> /etc/pgbackrest.conf
+    #       echo "pg1-path=/var/lib/postgresql/18/docker" >> /etc/pgbackrest.conf
+    #       echo "pg1-port=5432" >> /etc/pgbackrest.conf
+    #       echo "pg1-user=postgres" >> /etc/pgbackrest.conf
+    #     tags:
+    #       - update_pgbackrest_config
+
+    - name: Update configuration file
+      ansible.builtin.blockinfile:
+        path: /etc/pgbackrest.conf
+        block: |
+          [netflix_shows]
+          pg1-path=/var/lib/postgresql/18/docker
+          pg1-port=5432
+          pg1-user=postgres
       tags:
         - update_pgbackrest_config
+
+    - name: Create pgbackrest control file
+      ansible.builtin.shell: |
+        mkdir -p /tmp/pgbackrest
+        chown postgres:postgres /tmp/pgbackrest
+        chmod -R 700 /tmp/pgbackrest
+        chown postgres:postgres /etc/pgbackrest.conf
+        chmod 600 /etc/pgbackrest.conf
+
+    - name: Create Stanza
+      ansible.builtin.shell: |
+        pgbackrest --stanza=netflix_shows stanza-create
+      args:
+        creates: /var/lib/pgbackrest/archive/netflix_shows/archive.info
+      tags:
+        - create_stanza
 
     - name: Execute sql script
       ansible.builtin.shell: |
@@ -49,8 +78,13 @@
       tags:
         - execute_sql_script_queries
 
-    - name: Execute sql script
+    - name: Execute sql script flight
       ansible.builtin.shell: |
-        psql -U postgres -d {{ pg_db }} -f /tmp/flight.sql
+        psql -U postgres -d {{ pg_db }} -f /tmp/netflix.sql
       tags:
         - execute_sql_script_flight
+
+    - name: Permission pgbackrest
+      ansible.builtin.shell: |
+        chown -R postgres:postgres /var/lib/pgbackrest
+        chmod -R 750 /var/lib/pgbackrest

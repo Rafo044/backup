@@ -7,6 +7,6 @@
   tasks:
     - name: Create Differential backup
       ansible.builtin.shell: |
-        pgbackrest --stanza=demo --type=differential backup
+        pgbackrest --stanza=netflix_shows --type=diff backup
       tags:
         - create_differential_backup

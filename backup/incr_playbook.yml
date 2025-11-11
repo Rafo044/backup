@@ -7,6 +7,6 @@
   tasks:
     - name: Create Incremental backup
       ansible.builtin.shell: |
-        pgbackrest --stanza=demo --type=incr backup
+        pgbackrest --stanza=netflix_shows --type=incr backup
       tags:
         - create_incremental_backup
