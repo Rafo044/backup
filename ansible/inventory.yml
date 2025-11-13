@@ -1,5 +1,0 @@
-postgres_db:
-  hosts:
-    postgres_db:
-      ansible_connection: docker
-      ansible_user: postgres

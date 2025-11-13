@@ -1,0 +1,37 @@
+- name: Create Incremental backup
+  hosts: postgres_db
+  gather_facts: false
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Check backup status
+      ansible.builtin.shell: |
+        pgbackrest --info
+      register: backup_info
+      tags:
+        - backup_info
+
+      debug:
+        msg: "Backup status: {{ backup_info.stdout }}"
+
+    - name: Stop PostgreSQL service
+      ansible.builtin.service:
+        name: postgresql
+        state: stopped
+      tags:
+        - stop_postgres
+
+    - name: Delete old files
+      ansible.builtin.shell: |
+        rm -rf /var/lib/postgresql/18/
+        mkdir /var/lib/postgresql/18/
+        chown postgres:postgres /var/lib/postgresql/18/
+      tags:
+        - delete_old_files
+
+    - name: Restore all data spesific time
+      ansible.builtin.shell: |
+        pgbackrest --stanza=demo --type=time "--target='$(restore_time)'" --target-action=promote restore
+      tags:
+        - restore_data

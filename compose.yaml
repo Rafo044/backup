@@ -1,11 +1,12 @@
 services:
   postgres:
-    image: postgres:18
+    build: ./data
     container_name: postgres_db
     networks:
       - postgres
     ports:
       - "$POSTGRES_PORT:5432"
+      - "$SSH_PORT:22"
     volumes:
       - ./data:/var/lib/postgresql
     env_file:

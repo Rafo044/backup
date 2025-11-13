@@ -1,0 +1,12 @@
+- name: Create Incremental backup
+  hosts: postgres_db
+  gather_facts: false
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Create Incremental backup
+      ansible.builtin.shell: |
+        pgbackrest --stanza=demo --type=incr backup
+      tags:
+        - create_incremental_backup
