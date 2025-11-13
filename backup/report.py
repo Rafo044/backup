@@ -1,5 +1,6 @@
 """This module contains functions for generating disaster recovery reports."""
 
+import json
 import os
 from datetime import datetime
 
@@ -22,7 +23,7 @@ pg_version = data["db"][0]["version"] if data["db"] else None
 system_id = data["db"][0]["system-id"] if data["db"] else None
 
 if data["backup"]:
-    last_backup = data["backup"][-1]  # son backup
+    last_backup = data["backup"][-1]
     last_backup_label = last_backup["label"]
     backup_type = last_backup["type"]
     backup_start_ts = last_backup["timestamp"]["start"]
@@ -32,7 +33,14 @@ else:
     last_backup_label = backup_type = backup_start_ts = backup_stop_ts = backup_size = (
         None
     )
-
+# ---------
+tf = 1.2
+bqm = 300
+tm = 300
+backup_duration = backup_stop_ts - backup_start_ts
+backup_stop_ts =  datetime.fromtimestamp(backup_stop_ts)
+backup_start_ts =  datetime.fromtimestamp(backup_start_ts)
+rto = backup_duration * tf + bqm + tm
 
 pdfmetrics.registerFont(
     TTFont("DejaVuSans", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
@@ -68,11 +76,8 @@ body_style = ParagraphStyle(
     spaceAfter=6,
 )
 
-report_date = datetime.now().strftime("%Y-%m-%d %H:%M")
-rto = os.getenv("RTO")
-rpo = os.getenv("RPO")
-incident = os.getenv("INCIDENT")
-impact = os.getenv("IMPACT")
+report_date = datetime.now()
+rpo = report_date - backup_stop_ts
 recovery_steps = [
     "Zəmanətli ehtiyat nüsxə bərpası başladı",
     "Database cluster yenidən işə salındı",
@@ -85,13 +90,15 @@ elements.append(Paragraph(f"Hesabat tarixi: {report_date}", body_style))
 elements.append(Spacer(1, 12))
 
 data = [
-    ["Hadisə", incident],
-    ["Təsir səviyyəsi", impact],
-    ["RTO", rto],
-    ["RPO", rpo],
+    ["Backup müddəti", f"{backup_duration} saniyə"],
+    ["Təhlükəsizlik faktoru", f"{tf} əmsal"],
+    ["Bərpa infrastrukturunun qurulma müddəti", f"{bqm} saniyə"],
+    ["Test müddəti", f"{tm} saniyə"],
+    ["RTO", f"{rto} saniyə"],
+    ["RPO", f"{rpo} saniyə"],
 ]
 
-table = Table(data, colWidths=[120, 360])
+table = Table(data)
 table.setStyle(
     TableStyle(
         [
