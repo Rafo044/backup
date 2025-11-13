@@ -1,6 +1,5 @@
 """This module contains functions for generating disaster recovery reports."""
 
-import json
 import os
 from datetime import datetime
 
@@ -33,9 +32,7 @@ else:
     last_backup_label = backup_type = backup_start_ts = backup_stop_ts = backup_size = (
         None
     )
-backup_duration = (backup_stop_ts - backup_start_ts).total_seconds() / 60
-now = datetime.now()
-rpo = (now - backup_stop_ts).total_seconds() / 60
+
 
 pdfmetrics.registerFont(
     TTFont("DejaVuSans", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
