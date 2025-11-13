@@ -55,7 +55,7 @@ Layihənin işə salınması və backup prosesinin idarə edilməsi aşağıdak�
         ```
 
 7.  **Uzaq Server Konfiqurasiyası**: `inventory.ini` faylında uzaq serverin məlumatları (host, istifadəçi adı, SSH açarı) təyin olunur. Məsələn, Docker konteyneri daxilində çalışan `sshd` xidməti uzaq server olaraq konfiqurasiya edilmişdir. Real dünya ssenarilərində bu, adətən xüsusi bir backup serveri və ya PostgreSQL serverinin özü olur.
-```
+
 ## Backup prosesi əsasən 3 növü var :
 1. Full Backup
 2. Incremental Backup
