@@ -16,6 +16,46 @@ Bu layihə, PostgreSQL verilənlər bazalarının etibarlı və avtomatlaşdır�
 
 ![Data Pipeline](./docs/images/pipeline.png)
 
+## Layihənin İşləmə Mexanizmi
+
+Layihənin işə salınması və backup prosesinin idarə edilməsi aşağıdakı addımlarla həyata keçirilir:
+
+1.  **Əsas Qovluqda Hazırlıq**: Layihənin ana qovluğunda `compose.yaml` faylı ilə Docker mühiti qurulur. Bu, PostgreSQL verilənlər bazası və SSH xidməti olan bir Docker konteynerini işə salır. SSH xidməti, Ansible-ın uzaq serverə qoşulması üçün istifadə olunur.
+    ```bash
+    make up
+    ```
+
+2.  **Ansible Quraşdırılması**: Ansible-ın yerli maşınınızda quraşdırıldığından əmin olun. Əgər quraşdırılmayıbsa, müvafiq paket meneceri (apt, yum, pip) vasitəsilə quraşdırın.
+
+3.  **Backup Qovluğuna Keçid**: Bütün Ansible playbookları və konfiqurasiya faylları `backup` qovluğunda yerləşir.
+    ```bash
+    cd backup
+    ```
+
+4.  **İlkin Quraşdırma (Initial Playbook)**: İlk olaraq, pgBackRest-in quraşdırılması, PostgreSQL konfiqurasiyasının aparılması və lazım olan digər ilkin addımlar `initial_playbook.yml` vasitəsilə həyata keçirilir. Bu, uzaq serverdə (Docker konteynerindəki `sshd` xidməti) pgBackRest-i işə salmaq üçün zəruri olan bütün komponentləri təmin edir.
+    ```bash
+    ansible-playbook -i inventory.ini initial_playbook.yml
+    ```
+    *Qeyd*: `inventory.ini` faylında uzaq serverin IP ünvanı və ya host adı göstərilməlidir. Bu layihədə Docker içində quraşdırılmış SSH xidməti uzaq server kimi istifadə olunur.
+
+5.  **Full Backupın Alınması**: İlkin quraşdırma tamamlandıqdan sonra, verilənlər bazasının tam backupını almaq üçün `full_playbook.yml` istifadə olunur.
+    ```bash
+    ansible-playbook -i inventory.ini full_playbook.yml --tags "create_full_backup"
+    ```
+
+6.  **Digər Backup Növlərinin İstifadəsi**: Tam backup alındıqdan sonra, tələblərə uyğun olaraq inkremental (`incr_playbook.yml`) və ya differensial (`diff_playbook.yml`) backup növlərindən istifadə edə bilərsiniz.
+
+    *   **Incremental Backup**:
+        ```bash
+        ansible-playbook -i inventory.ini incr_playbook.yml --tags "create_incremental_backup"
+        ```
+    *   **Differential Backup**:
+        ```bash
+        ansible-playbook -i inventory.ini diff_playbook.yml --tags "create_differential_backup"
+        ```
+
+7.  **Uzaq Server Konfiqurasiyası**: `inventory.ini` faylında uzaq serverin məlumatları (host, istifadəçi adı, SSH açarı) təyin olunur. Məsələn, Docker konteyneri daxilində çalışan `sshd` xidməti uzaq server olaraq konfiqurasiya edilmişdir. Real dünya ssenarilərində bu, adətən xüsusi bir backup serveri və ya PostgreSQL serverinin özü olur.
+```
 ## Backup prosesi əsasən 3 növü var :
 1. Full Backup
 2. Incremental Backup
