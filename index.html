@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>My Docs</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/solarized-dark.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">My Docs</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#baslangc" class="nav-link">Başlangıc</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#data-pipeline" class="nav-link">Data Pipeline</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#backup-prosesi-sasn-3-novu-var" class="nav-link">Backup prosesi əsasən 3 növü var :</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#ansible-komandalar-v-izahlar" class="nav-link">Ansible komandaları və izahları</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#pgbackres_infojson-faylndan-ld-ediln-gostricilr" class="nav-link">pgBackRes_info.json Faylından Əldə Edilən Göstəricilər</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#rpo-recovery-point-objective-hesablanmas" class="nav-link">RPO (Recovery Point Objective) Hesablanması</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#rto-recovery-time-objective-hesablanmas" class="nav-link">RTO (Recovery Time Objective) Hesablanması</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#rsmi-rtorpo-sndlrind-olmas-lazm-olan-lav-mlumatlar-pgbackrest_infojson-olmayanlar" class="nav-link">Rəsmi RTO/RPO Sənədlərində Olması Lazım Olan Əlavə Məlumatlar (pgbackrest_info.json Olmayanlar)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="baslangc">Başlangıc</h1>
+<p align="center">
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/pgBackRest-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white" alt="pgBackRest">
+  <img src="https://img.shields.io/badge/Ansible-EE0000?style=for-the-badge&logo=ansible&logoColor=white" alt="Ansible">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+</p>
+
+<p>Bu layihə, PostgreSQL verilənlər bazalarının etibarlı və avtomatlaşdırılmış fəlakətin bərpası (Disaster Recovery) həllini təmin edir. pgBackRest vasitəsilə tam, inkremental və differensial backup strategiyaları tətbiq edilir, Ansible playbookları isə quraşdırma, konfiqurasiya və bərpa proseslərini asanlaşdırır. Məqsəd, məlumat itkisini (RPO) minimuma endirmək və bərpa müddətini (RTO) optimallaşdırmaqdır.</p>
+<h2 id="data-pipeline">Data Pipeline</h2>
+<p><img alt="Data Pipeline" src="./docs/images/pipeline.png" /></p>
+<h2 id="backup-prosesi-sasn-3-novu-var">Backup prosesi əsasən 3 növü var :</h2>
+<ol>
+<li>Full Backup</li>
+<li>Incremental Backup</li>
+<li>Differential Backup</li>
+</ol>
+<h2 id="ansible-komandalar-v-izahlar">Ansible komandaları və izahları</h2>
+<table>
+<thead>
+<tr>
+<th>Tapşırıqın adı</th>
+<th>Ansible Tag</th>
+<th>Gördüyü iş</th>
+<th>Komanda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full Backup</td>
+<td>create_full_backup</td>
+<td>Full bərpanın alınması</td>
+<td><code>ansible-playbook backup/full_playbook.yml --tags "create_full_backup"</code></td>
+</tr>
+<tr>
+<td>Incremental Backup</td>
+<td>create_incremental_backup</td>
+<td>Incremental bərpanın alınması</td>
+<td><code>ansible-playbook backup/incr_playbook.yml --tags "create_incremental_backup"</code></td>
+</tr>
+<tr>
+<td>Differential Backup</td>
+<td>create_differential_backup</td>
+<td>Differential bərpanın alınması</td>
+<td><code>ansible-playbook backup/diff_playbook.yml --tags "create_differential_backup"</code></td>
+</tr>
+<tr>
+<td>Point-in-Time Recovery</td>
+<td>restore_data</td>
+<td>Hər hansı zamana görə bərpa prosesi</td>
+<td><code>ansible-playbook backup/pitr_playbook.yml --tags "restore_data" -e "restore_time='YYYY-MM-DD HH:MM:SS'"</code></td>
+</tr>
+<tr>
+<td>Install pgbackrest</td>
+<td>install_pgbackrest</td>
+<td>pgbackrest-in yüklənməsi</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "install_pgbackrest"</code></td>
+</tr>
+<tr>
+<td>Install wget</td>
+<td>install_wget</td>
+<td>wget-in yüklənməsi</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "install_wget"</code></td>
+</tr>
+<tr>
+<td>Queries skripti</td>
+<td>execute_sql_script_queries</td>
+<td>Queries skriptinin postgresə yüklənməsi</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "execute_sql_script_queries"</code></td>
+</tr>
+<tr>
+<td>Flight skripti</td>
+<td>execute_sql_script_flight</td>
+<td>Flight skriptinin postgresə yüklənməsi</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "execute_sql_script_flight"</code></td>
+</tr>
+<tr>
+<td>Install Flight dataset</td>
+<td>install_netflix_dataset</td>
+<td>Flight datasetinin mənbədən yüklənməsi</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "install_netflix_dataset"</code></td>
+</tr>
+<tr>
+<td>Update pgBackRest config</td>
+<td>update_pgbackrest_config</td>
+<td>pgBackRest konfiqurasiya faylının yenilənməsi</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "update_pgbackrest_config"</code></td>
+</tr>
+<tr>
+<td>Create Stanza</td>
+<td>create_stanza</td>
+<td>pgBackRest üçün stanza yaradılması</td>
+<td><code>ansible-playbook backup/initial_playbook.yml --tags "create_stanza"</code></td>
+</tr>
+<tr>
+<td>Get pgBackRest Info</td>
+<td>info_playbook (task adı)</td>
+<td>pgBackRest məlumatının JSON formatında alınması</td>
+<td><code>ansible-playbook backup/info_playbook.yml</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="pgbackres_infojson-faylndan-ld-ediln-gostricilr">pgBackRes_info.json Faylından Əldə Edilən Göstəricilər</h2>
+<p><code>pgbackrest_info.json</code> faylı PostgreSQL instansı üçün backup və arxiv məlumatlarını ehtiva edir. Əsasən bu məlumatlar RTO və RPO hesablamaları üçün kritikdir:</p>
+<ul>
+<li><strong><code>backup.timestamp.start</code></strong>: Backup prosesinin başladığı Unix zamanı.</li>
+<li><strong><code>backup.timestamp.stop</code></strong>: Backup prosesinin bitdiyi Unix zamanı.</li>
+<li><strong><code>backup.type</code></strong>: Backupın növü (məsələn, <code>full</code>, <code>incr</code>, <code>diff</code>). Bu, bərpa müddətinə təsir edir.</li>
+<li><strong><code>archive.max</code> / <code>archive.min</code></strong>: WAL arxivlərinin əhatə etdiyi ən son və ən erkən WAL seqmentləri. Bu, hansı müddətə qədər bərpa edilə biləcəyini göstərir.</li>
+</ul>
+<h2 id="rpo-recovery-point-objective-hesablanmas">RPO (Recovery Point Objective) Hesablanması</h2>
+<p>RPO, fəlakət baş verərsə, sistemin itirə biləcəyi məlumatın maksimal yaşını müəyyənləşdirir. pgBackRest məlumatlarına əsasən RPO-nu hesablamaq üçün son uğurlu backupın bitmə zamanı (<code>backup.timestamp.stop</code>) ilə indiki vaxt arasındakı fərq istifadə olunur.</p>
+<p><strong>Hesablama düsturu:</strong></p>
+<p><code>RPO = (İndiki Vaxt - Son Backupın Bitmə Zamanı)</code></p>
+<p><strong>İzah:</strong></p>
+<p>Bu hesablama, sistemin hər hansı bir anda neçə dəqiqəlik (və ya saatlıq) məlumat itirmə riskinin olduğunu göstərir. Məsələn, əgər son backup 60 dəqiqə əvvəl tamamlanıbsa, RPO 60 dəqiqədir. Bu o deməkdir ki, fəlakət baş verərsə, maksimum 60 dəqiqəlik məlumat itirilə bilər.</p>
+<p>pgBackRest WAL arxivlərini istifadə etdiyi üçün, hətta backup alındıqdan sonra baş verən dəyişikliklər də WAL faylları vasitəsilə bərpa oluna bilər. Lakin RPO-nun ən konservativ hesablanması son <em>əsas</em> backup və ya inkremental backupın bitmə zamanına əsaslanır. PITR (Point-in-Time Recovery) imkanı WAL arxivlərinin mövcudluğundan asılıdır ki, bu da RPO-nu sıfıra yaxınlaşdıra bilər.</p>
+<h2 id="rto-recovery-time-objective-hesablanmas">RTO (Recovery Time Objective) Hesablanması</h2>
+<p>RTO, fəlakətdən sonra sistemin normal işlək vəziyyətinə qayıtması üçün icazə verilən maksimal müddətdir. pgBackRest məlumatlarına əsasən RTO-nu dəqiq hesablamaq bir qədər mürəkkəbdir, çünki RTO-ya yalnız backupın özü deyil, həm də bərpa prosesi, sistemin qurulması, test edilməsi və s. daxildir. Lakin, pgBackRest <code>info</code> faylındakı <code>backup.timestamp.start</code> və <code>backup.timestamp.stop</code> dəyərləri backupın özünün nə qədər vaxt apardığını göstərir. Bu, RTO-nun bir komponentidir.</p>
+<p><strong>Hesablama düsturu (konseptual):</strong></p>
+<p><code>Backup Müddəti = (Backupın Bitmə Zamanı - Backupın Başlanğıc Zamanı)</code></p>
+<p><code>Təxmini RTO = Backup Müddəti * Təhlükəsizlik Faktoru + Bərpa Infrastrukturunun Qurulma Müddəti + Test Müddəti</code></p>
+<p><strong>İzah:</strong></p>
+<ul>
+<li><strong>Backup Müddəti</strong>: <code>pgbackrest_info.json</code> faylındakı <code>backup.timestamp</code> sahəsindən birbaşa əldə edilə bilər. Bu, backupın nə qədər vaxt aldığını göstərir. Məsələn, <code>(1762877427 - 1762877424) = 3 saniyə</code> (JSON faylına əsasən). Real dünya ssenarilərində bu, dəqiqələr və ya saatlar ola bilər.</li>
+<li><strong>Təhlükəsizlik Faktoru</strong>: Bərpa prosesinin backupdan daha uzun çəkə biləcəyini nəzərə alaraq (məsələn, xarici disklərdən məlumatın oxunması, WAL-ların tətbiqi, və s.) istifadə olunan bir əmsaldır (məsələn, 1.2-1.5).</li>
+<li><strong>Bərpa Infrastrukturunun Qurulma Müddəti</strong>: Yeni bir serverin hazırlanması, PostgreSQL-in quraşdırılması, pgBackRest-in konfiqurasiyası kimi addımları əhatə edir. Bu, avtomatlaşdırılmış Ansible playbookları (məsələn, <code>initial_playbook.yml</code>) vasitəsilə azaldıla bilər.</li>
+<li><strong>Test Müddəti</strong>: Bərpa edilmiş məlumatın bütövlüyünün və sistemin funksionallığının yoxlanılması üçün lazım olan vaxt.</li>
+</ul>
+<p>pgBackRest tərəfindən yaradılan <code>info</code> faylı bir backupın nə qədər vaxt apardığını dəqiq göstərsə də, ümumi RTO-nu qiymətləndirmək üçün əlavə əməliyyat xərcləri (serverin hazırlanması, proqram təminatının quraşdırılması, konfiqurasiya, test) nəzərə alınmalıdır.</p>
+<h2 id="rsmi-rtorpo-sndlrind-olmas-lazm-olan-lav-mlumatlar-pgbackrest_infojson-olmayanlar">Rəsmi RTO/RPO Sənədlərində Olması Lazım Olan Əlavə Məlumatlar (pgbackrest_info.json Olmayanlar)</h2>
+<p>Hərtərəfli və rəsmi bir Fəlakətin Bərpası (Disaster Recovery - DR) planı və RTO/RPO sənədi pgBackRest <code>info</code> faylından əldə edilən texniki məlumatlardan daha geniş məlumatları əhatə etməlidir. Sizin mövcud <code>report.py</code> və <code>pgbackrest_info.json</code> fayllarında olmayan, lakin rəsmi sənədlərdə mütləq olması lazım olan əlavə məlumatlar aşağıdakılardır:</p>
+<ol>
+<li>
+<p><strong>Biznes Proseslərinin Təsiri və Prioritetləşdirmə:</strong></p>
+<ul>
+<li>Hər bir sistemin və ya database-in hansı biznes prosesləri üçün kritik olduğu.</li>
+<li>Fəlakət zamanı hansı sistemlərin ilk növbədə bərpa edilməli olduğuna dair prioritetlər.</li>
+<li>Hər bir biznes prosesi üçün tolerant ola biləcəyi maksimal fasilə müddəti.</li>
+</ul>
+</li>
+<li>
+<p><strong>Hadisənin İdarə Olunması Prosedurları (Incident Management):</strong></p>
+<ul>
+<li>Fəlakət aşkar edildikdə atılacaq ilk addımlar.</li>
+<li>Hadisənin kimə bildiriləcəyi (əlaqədar şəxslər, komandalar).</li>
+<li>Kommunikasiya planı (daxili və xarici tərəflərlə əlaqə).</li>
+</ul>
+</li>
+<li>
+<p><strong>Məsuliyyət Matrisi (Roles and Responsibilities):</strong></p>
+<ul>
+<li>Fəlakətin bərpası prosesində hər bir komandanın və ya şəxsin dəqiq vəzifələri.</li>
+<li>Kim qərar verir, kim icra edir, kim məlumat verir.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bərpa Strategiyaları və Arxivləmə Siyasətləri:</strong></p>
+<ul>
+<li>Nə qədər müddətə və hansı tip backupların saxlandığı (məsələn, ən son 7 tam backup, 30 günlük WAL arxivləri).</li>
+<li>Backup mediasının yeri (on-site, off-site, bulud).</li>
+<li>Məlumatların şifrlənməsi və təhlükəsizlik tədbirləri.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bərpa Prosedurlarının Tam Təsviri (Step-by-Step Recovery Procedures):</strong></p>
+<ul>
+<li>Hər bir fəlakət ssenarisi üçün (məsələn, database korrupsiyası, server qəzası, region qəzası) addım-addım bərpa təlimatları.</li>
+<li>Quraşdırma təlimatları (əməliyyat sistemi, PostgreSQL, pgBackRest).</li>
+<li>Konfiqurasiya fayllarının yerləri və onların tənzimlənməsi.</li>
+<li><code>report.py</code> faylındakı "Fəlakətin Bərpası Addımları" hissəsi bu tələbatın bir hissəsini ödəyir, lakin daha detallı texniki addımlar, əmrlər və gözlənilən nəticələr əlavə edilməlidir.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Prosedurları və Nəticələri:</strong></p>
+<ul>
+<li>DR planının nə qədər tez-tez test edildiyi.</li>
+<li>Test nəticələrinin qeydə alınması və bərpa müddətlərinin ölçülməsi.</li>
+<li>Aşkarlanan çatışmazlıqların və onların həlli yollarının təsviri.</li>
+</ul>
+</li>
+<li>
+<p><strong>Asılılıqlar (Dependencies):</strong></p>
+<ul>
+<li>Bərpa ediləcək sistemin digər sistemlərdən asılılıqları (məsələn, tətbiq serverləri, şəbəkə xidmətləri, autentifikasiya sistemləri).</li>
+<li>Bu asılılıqların bərpa ardıcıllığına necə təsir etdiyi.</li>
+</ul>
+</li>
+<li>
+<p><strong>Resurs Tələbləri:</strong></p>
+<ul>
+<li>Bərpa üçün lazım olan hardware (CPU, RAM, Disk) və software resursları.</li>
+<li>Şəbəkə bant genişliyi tələbləri.</li>
+</ul>
+</li>
+<li>
+<p><strong>Gələcək Təkmilləşdirmələr və Öyrənilən Dərslər:</strong></p>
+<ul>
+<li>DR prosesindən və testlərdən əldə olunan nəticələrə əsasən planın necə təkmilləşdiriləcəyi.</li>
+<li>Öyrənilən dərslərin qeydə alınması.</li>
+</ul>
+</li>
+</ol>
+<p>Bu əlavə məlumatlar RTO və RPO-nu yalnız texniki göstəricilər kimi deyil, həm də biznes davamlılığının əsas komponentləri kimi qiymətləndirməyə imkan verir.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-11-13 13:53:21.259393+00:00
+-->
