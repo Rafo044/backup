@@ -1,0 +1,60 @@
+name: Sync README with docs/index.md
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Sync docs/index.md → README.md
+        run: |
+          python <<'PYCODE'
+          import re, os
+
+          INDEX = "docs/index.md"
+          README = "README.md"
+
+          if not os.path.exists(INDEX):
+              print("❌ docs/index.md tapılmadı")
+              exit(0)
+
+          with open(INDEX, "r", encoding="utf-8") as f:
+              content = f.read()
+
+          # MkDocs üçün olan ./images/... → GitHub üçün ./docs/images/... düzəlişi
+          content_fixed = re.sub(r'\]\(\./images/', '](./docs/images/', content)
+
+          with open(README, "w", encoding="utf-8") as f:
+              f.write(content_fixed)
+
+          print("✅ README.md yeniləndi.")
+          PYCODE
+
+      - name: Commit and push if changed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          if ! git diff --quiet README.md; then
+            git add README.md
+            git commit -m "Sync README.md from docs/index.md"
+            git push
+            echo "✅ README.md dəyişiklikləri push edildi."
+          else
+            echo "ℹ️ README.md artıq sinxron vəziyyətdədir."
+          fi
