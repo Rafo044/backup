@@ -9,7 +9,7 @@
 </p>
 
 
-Bu layihə, PostgreSQL verilənlər bazalarının etibarlı və avtomatlaşdırılmış fəlakət bərpası (Disaster Recovery) həllini təmin edir. pgBackRest vasitəsilə tam, inkremental və differensial backup strategiyaları tətbiq edilir, Ansible playbookları isə quraşdırma, konfiqurasiya və bərpa proseslərini asanlaşdırır. Məqsəd, məlumat itkisini (RPO) minimuma endirmək və bərpa müddətini (RTO) optimallaşdırmaqdır.
+Bu layihə, PostgreSQL verilənlər bazalarının etibarlı və avtomatlaşdırılmış fəlakətin bərpası (Disaster Recovery) həllini təmin edir. pgBackRest vasitəsilə tam, inkremental və differensial backup strategiyaları tətbiq edilir, Ansible playbookları isə quraşdırma, konfiqurasiya və bərpa proseslərini asanlaşdırır. Məqsəd, məlumat itkisini (RPO) minimuma endirmək və bərpa müddətini (RTO) optimallaşdırmaqdır.
 
 
 ## Data Pipeline
